@@ -3,10 +3,10 @@ services:
   ib-gateway:
     restart: always
     build:
-      context: ./latest
+      context: ./stable
       tags:
-        - "ghcr.io/gnzsnz/ib-gateway:latest"
-    image: ghcr.io/gnzsnz/ib-gateway:latest
+        - "ghcr.io/gnzsnz/ib-gateway:stable"
+    image: ghcr.io/gnzsnz/ib-gateway:stable
     environment:
       TWS_USERID: ${TWS_USERID}
       TWS_PASSWORD: ${TWS_PASSWORD}
@@ -41,12 +41,18 @@ services:
       SSH_USER_TUNNEL: ${SSH_USER_TUNNEL:-}
       SSH_RESTART: ${SSH_RESTART:-}
       SSH_VNC_PORT: ${SSH_VNC_PORT:-}
-    #    volumes:
-    #      - ${PWD}/jts.ini:/home/ibgateway/Jts/jts.ini
-    #      - ${PWD}/config.ini:/home/ibgateway/ibc/config.ini
-    #      - ${PWD}/tws_settings/:${TWS_SETTINGS_PATH:-/home/ibgateway/Jts}
-    #      - ${PWD}/ssh/:/home/ibgateway/.ssh
+    volumes:
+      # Persist settings across container restarts
+      - ib_gateway_settings:/home/ibgateway/Jts
+      # Optional: Custom configs
+      # - ${PWD}/config.ini:/home/ibgateway/ibc/config.ini
+      # - ${PWD}/jts.ini:/home/ibgateway/Jts/jts.ini
     ports:
       - "127.0.0.1:4001:4003"
       - "127.0.0.1:4002:4004"
-      - "127.0.0.1:5900:5900"
+      # VNC disabled for production
+      # - "127.0.0.1:5900:5900"
+
+volumes:
+  ib_gateway_settings:
+    driver: local
