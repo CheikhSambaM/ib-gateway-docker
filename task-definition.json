@@ -1,0 +1,43 @@
+{
+  "family": "ib-gateway-paper",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::825308913593:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "ib-gateway",
+      "image": "ghcr.io/gnzsnz/ib-gateway:stable",
+      "essential": true,
+      "portMappings": [
+        {"containerPort": 4003, "protocol": "tcp"},
+        {"containerPort": 4004, "protocol": "tcp"}
+      ],
+      "environment": [
+        {"name": "TWS_USERID", "value": "xowoke517"},
+        {"name": "TWS_PASSWORD", "value": "Beaute206!"},
+        {"name": "TRADING_MODE", "value": "paper"},
+        {"name": "READ_ONLY_API", "value": "no"},
+        {"name": "TWS_ACCEPT_INCOMING", "value": "accept"},
+        {"name": "TWOFA_TIMEOUT_ACTION", "value": "restart"},
+        {"name": "RELOGIN_AFTER_TWOFA_TIMEOUT", "value": "yes"},
+        {"name": "EXISTING_SESSION_DETECTED_ACTION", "value": "primary"},
+        {"name": "BYPASS_WARNING", "value": "yes"},
+        {"name": "ALLOW_BLIND_TRADING", "value": "no"},
+        {"name": "AUTO_RESTART_TIME", "value": "08:00"},
+        {"name": "TWS_COLD_RESTART", "value": "04:00"},
+        {"name": "SAVE_TWS_SETTINGS", "value": "08:00 12:00 16:00 20:00"},
+        {"name": "TIME_ZONE", "value": "America/New_York"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ib-gateway",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
